@@ -22,12 +22,19 @@ class ProjectController {
     configureRoutes(app) {
         app.get(`${this.baseRoute}`, this.getAllProjects.bind(this));
         app.post(`${this.baseRoute}`, this.addProject.bind(this));
+        app.get(`${this.baseRoute}/:id`, this.getOneProject.bind(this));
+        app.put(`${this.baseRoute}/:id`, this.updateProject.bind(this));
     }
     getAllProjects(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const projects = yield this.projectRepository.getAllProjects();
-            const result = projects === null || projects === void 0 ? void 0 : projects.map((project) => (0, fromEntityToProjectDto_1.fromEntityToProjectDto)(project));
-            res.json({ projects: result });
+            try {
+                const projects = yield this.projectRepository.getAllProjects();
+                const result = projects === null || projects === void 0 ? void 0 : projects.map((project) => (0, fromEntityToProjectDto_1.fromEntityToProjectDto)(project));
+                res.json({ projects: result });
+            }
+            catch (error) {
+                next(error);
+            }
         });
     }
     addProject(req, res, next) {
@@ -38,6 +45,36 @@ class ProjectController {
                 projectDto.validate();
                 const savedProject = yield this.projectService.addProject((0, fromNewProjectDtoToEntity_1.fromNewProjectDtoToEntity)(projectDto));
                 res.json({ createdProject: (0, fromEntityToProjectDto_1.fromEntityToProjectDto)(savedProject) });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    getOneProject(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            try {
+                const project = yield this.projectService.getOneProject(Number(id));
+                res.json(project);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    updateProject(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { body } = req;
+            try {
+                const project = yield this.projectService.updateProject(Number(id), body);
+                if (project === null) {
+                    return res
+                        .status(400)
+                        .json({ message: `Project ${id} does not exist` });
+                }
+                res.json((0, fromEntityToProjectDto_1.fromEntityToProjectDto)(project));
             }
             catch (error) {
                 next(error);

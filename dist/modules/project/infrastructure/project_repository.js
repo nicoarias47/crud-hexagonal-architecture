@@ -31,6 +31,20 @@ class ProjectRepository {
             return (0, fromModelToEntity_1.fromModelToEntity)(savedProject);
         });
     }
+    getOneProject(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const project = yield this.projectModel.findByPk(id);
+            return project === null ? null : (0, fromModelToEntity_1.fromModelToEntity)(project);
+        });
+    }
+    updateProject(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const project = yield this.projectModel.findOne({ where: { id } });
+            project === null || project === void 0 ? void 0 : project.set(body);
+            yield (project === null || project === void 0 ? void 0 : project.save());
+            return project === null ? null : (0, fromModelToEntity_1.fromModelToEntity)(project);
+        });
+    }
 }
 exports.ProjectRepository = ProjectRepository;
 //# sourceMappingURL=project_repository.js.map

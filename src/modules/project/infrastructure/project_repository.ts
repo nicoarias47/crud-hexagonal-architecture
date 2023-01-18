@@ -25,4 +25,20 @@ export class ProjectRepository implements IProjectRepository {
 
     return fromModelToEntity(savedProject);
   }
+
+  async getOneProject(id: number): Promise<Project | null> {
+    const project = await this.projectModel.findByPk(id);
+
+    return project === null ? null : fromModelToEntity(project);
+  }
+
+  async updateProject(id: number, body: Object): Promise<Project | null> {
+    const project = await this.projectModel.findOne({ where: { id } });
+
+    project?.set(body);
+
+    await project?.save();
+
+    return project === null ? null : fromModelToEntity(project);
+  }
 }

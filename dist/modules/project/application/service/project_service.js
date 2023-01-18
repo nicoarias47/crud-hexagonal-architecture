@@ -25,6 +25,18 @@ class ProjectService {
             return savedProject;
         });
     }
+    getOneProject(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const project = yield this.projectRepository.getOneProject(id);
+            return project;
+        });
+    }
+    updateProject(id, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const project = yield this.projectRepository.updateProject(id, body);
+            return project;
+        });
+    }
 }
 exports.ProjectService = ProjectService;
 //# sourceMappingURL=project_service.js.map

@@ -13,4 +13,16 @@ export class ProjectService {
 
     return savedProject;
   }
+
+  async getOneProject(id: number): Promise<Project | null> {
+    const project = await this.projectRepository.getOneProject(id);
+
+    return project;
+  }
+
+  async updateProject(id: number, body: Object): Promise<Project | null> {
+    const project = await this.projectRepository.updateProject(id, body);
+
+    return project;
+  }
 }
