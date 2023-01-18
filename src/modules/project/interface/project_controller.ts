@@ -1,16 +1,16 @@
 import { Application, NextFunction, Request, Response } from "express";
 import { NewProjectDto } from "../application/dto/newProject_dto";
 import { ProjectService } from "../application/service/project_service";
-import { ProjectRepository } from "../infrastructure/project_repository";
 import { fromNewProjectDtoToEntity } from "../application/mapper/fromNewProjectDtoToEntity";
 import { fromEntityToProjectDto } from "../application/mapper/fromEntityToProjectDto";
+import { IProjectRepository } from "../application/repository/project.repository.interface";
 
 export class ProjectController {
   baseRoute = "/project";
 
   constructor(
     private readonly projectService: ProjectService,
-    private readonly projectRepository: ProjectRepository
+    private readonly projectRepository: IProjectRepository
   ) {}
 
   configureRoutes(app: Application): void {

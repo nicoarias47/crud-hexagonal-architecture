@@ -1,9 +1,8 @@
 import { Project } from "../../domain/project_entity";
-import { ProjectRepository } from "../../infrastructure/project_repository";
 import { ProjectEntityNotDefined } from "../error/ProjectEntityNotDefined";
-
+import { IProjectRepository } from "../repository/project.repository.interface";
 export class ProjectService {
-  constructor(private readonly projectRepository: ProjectRepository) {}
+  constructor(private readonly projectRepository: IProjectRepository) {}
 
   async addProject(project: Project): Promise<Project> {
     if (!(project instanceof Project)) {

@@ -1,8 +1,9 @@
 import { Project } from "../domain/project_entity";
 import { ProjectModel } from "./project_model";
 import { fromModelToEntity } from "../application/mapper/fromModelToEntity";
+import { IProjectRepository } from "../application/repository/project.repository.interface";
 
-export class ProjectRepository {
+export class ProjectRepository implements IProjectRepository {
   private readonly projectModel: typeof ProjectModel;
 
   constructor(projectModel: ProjectModel) {

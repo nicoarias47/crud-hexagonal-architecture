@@ -32,6 +32,7 @@ export class ProjectModel extends Model<any> {
         paranoid: true,
       }
     );
+
     return ProjectModel;
   }
 }
