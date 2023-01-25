@@ -4,6 +4,7 @@ import { ProjectService } from "../application/service/project_service";
 import { fromNewProjectDtoToEntity } from "../application/mapper/fromNewProjectDtoToEntity";
 import { fromEntityToProjectDto } from "../application/mapper/fromEntityToProjectDto";
 import { IProjectRepository } from "../application/repository/project.repository.interface";
+import { ProjectDoesNotExist } from "../application/error/ProjectDoesNotExist";
 
 export class ProjectController {
   baseRoute = "/project";
@@ -18,6 +19,7 @@ export class ProjectController {
     app.post(`${this.baseRoute}`, this.addProject.bind(this));
     app.get(`${this.baseRoute}/:id`, this.getOneProject.bind(this));
     app.put(`${this.baseRoute}/:id`, this.updateProject.bind(this));
+    app.delete(`${this.baseRoute}/:id`, this.deleteProject.bind(this));
   }
 
   async getAllProjects(req: Request, res: Response, next: NextFunction) {
@@ -77,6 +79,23 @@ export class ProjectController {
       }
 
       res.json(fromEntityToProjectDto(project));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteProject(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const existProject = await this.projectService.getOneProject(Number(id));
+
+      if (!existProject) {
+        throw new ProjectDoesNotExist();
+      }
+
+      await this.projectRepository.deleteProject(Number(id));
+
+      res.sendStatus(204);
     } catch (error) {
       next(error);
     }

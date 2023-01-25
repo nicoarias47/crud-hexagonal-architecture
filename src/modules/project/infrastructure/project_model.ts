@@ -27,7 +27,7 @@ export class ProjectModel extends Model<any> {
       {
         sequelize: sequelizeInstance,
         modelName: "Project",
-        tableName: "Projects",
+        tableName: "projects",
         underscored: true,
         paranoid: true,
       }
