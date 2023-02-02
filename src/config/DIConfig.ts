@@ -7,6 +7,10 @@ import {
   ProjectService,
 } from "../modules/project/project_module";
 import { ProjectModel } from "../modules/project/infrastructure/project_model";
+import { TaskModel } from "../modules/task/infrastructure/task_model";
+import { TaskController } from "../modules/task/interface/task_controller";
+import { TaskService } from "../modules/task/application/service/task_service";
+import { TaskRepository } from "../modules/task/infrastructure/task_repository";
 
 const dbConfig = (): Sequelize => {
   if (process.env.PROJECT_STATUS === "development") {
@@ -39,6 +43,10 @@ const configureProjectModel = (
   return ProjectModel.setup(container.get("sequelize"));
 };
 
+const configureTaskModel = (container: IDIContainer): typeof TaskModel => {
+  return TaskModel.setup(container.get("sequelize"));
+};
+
 const AddCommonDefinitions = (container: DIContainer): void => {
   container.add({
     sequelize: factory(dbConfig),
@@ -57,10 +65,23 @@ const addProjectDefinitions = (container: DIContainer): void => {
   });
 };
 
+const addTaskDefinitions = (container: DIContainer): void => {
+  container.add({
+    TaskController: object(TaskController).construct(
+      use(TaskService),
+      use(TaskRepository)
+    ),
+    TaskService: object(TaskService).construct(use(TaskRepository)),
+    TaskModel: factory(configureTaskModel),
+    TaskRepository: object(TaskRepository).construct(use(TaskModel)),
+  });
+};
+
 export default function ConfigDIC(): DIContainer {
   const container = new DIContainer();
   AddCommonDefinitions(container);
   addProjectDefinitions(container);
+  addTaskDefinitions(container);
   (container as IDIContainer).get("sequelize").sync();
   return container;
 }

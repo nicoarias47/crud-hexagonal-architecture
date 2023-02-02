@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import ConfigDIC from "./config/DIConfig";
 import { initProjectModule } from "./modules/project/project_module";
+import { initTaskModule } from "./modules/task/task_module";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 initProjectModule(app, container);
+initTaskModule(app, container);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
