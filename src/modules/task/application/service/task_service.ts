@@ -10,4 +10,22 @@ export class TaskService {
 
     return taskCreated;
   }
+
+  async getTaskById(id: number): Promise<Task | null> {
+    const task = await this.taskRepository.getTaskById(id);
+
+    return task;
+  }
+
+  async taskUpdated(id: number, task: Task): Promise<Task | null> {
+    const taskUpdated = await this.taskRepository.taskUpdated(id, task);
+
+    return taskUpdated;
+  }
+
+  async deleteTask(id: number): Promise<Task | null> {
+    const taskDeleted = await this.taskRepository.deleteTask(id);
+
+    return taskDeleted;
+  }
 }
