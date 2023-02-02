@@ -11,6 +11,7 @@ import { TaskModel } from "../modules/task/infrastructure/task_model";
 import { TaskController } from "../modules/task/interface/task_controller";
 import { TaskService } from "../modules/task/application/service/task_service";
 import { TaskRepository } from "../modules/task/infrastructure/task_repository";
+import SetDataAssociations from "./data_associations";
 
 const dbConfig = (): Sequelize => {
   if (process.env.PROJECT_STATUS === "development") {
@@ -83,5 +84,6 @@ export default function ConfigDIC(): DIContainer {
   addProjectDefinitions(container);
   addTaskDefinitions(container);
   (container as IDIContainer).get("sequelize").sync();
+  SetDataAssociations(container as IDIContainer);
   return container;
 }

@@ -8,20 +8,17 @@ export class TaskModel extends Model<any> {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true,
-          allowNull: false,
+          //allowNull: false,
           unique: true,
         },
         name: {
           type: DataTypes.STRING,
-          allowNull: false,
+          //allowNull: false,
         },
         done: {
           type: DataTypes.BOOLEAN,
-          allowNull: false,
-        },
-        projectId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
+          //allowNull: false,
+          defaultValue: false,
         },
       },
       {
