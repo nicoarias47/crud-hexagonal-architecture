@@ -5,5 +5,5 @@ export interface IProjectRepository {
   saveProject(project: Project): Promise<Project>;
   getOneProject(id: number): Promise<Project | null>;
   updateProject(id: number, body: Object): Promise<Project | null>;
-  deleteProject(id: number): Promise<Project>;
+  deleteProject(id: number): Promise<Project | null>;
 }

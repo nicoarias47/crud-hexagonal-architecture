@@ -42,9 +42,9 @@ export class ProjectRepository implements IProjectRepository {
     return project === null ? null : fromModelToEntity(project);
   }
 
-  async deleteProject(id: number): Promise<Project> {
+  async deleteProject(id: number): Promise<Project | null> {
     const projectDeleted = await this.projectModel.destroy({ where: { id } });
 
-    return fromModelToEntity(projectDeleted);
+    return projectDeleted === null ? null : fromModelToEntity(projectDeleted);
   }
 }

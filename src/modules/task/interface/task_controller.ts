@@ -1,7 +1,9 @@
 import { Application, NextFunction, Request, Response } from "express";
 import { TaskDto } from "../application/dto/task_dto";
 import { IdIsNotANumber } from "../application/error/IdIsNotANumber";
+import { TaskNotFound } from "../application/error/TaskNotFound";
 import { fromDtoToEntity } from "../application/mapper/fromDtoToEntity";
+import { fromEntityToDto } from "../application/mapper/fromEntityToDto";
 import { ITaskRepository } from "../application/repository/task_repository_interface";
 import { TaskService } from "../application/service/task_service";
 
@@ -38,7 +40,7 @@ export class TaskController {
         fromDtoToEntity(taskDto)
       );
 
-      res.json(taskCreated);
+      res.json(fromEntityToDto(taskCreated));
     } catch (error) {
       next(error);
     }
@@ -52,7 +54,9 @@ export class TaskController {
     try {
       const allTasks = await this.taskRepository.getAllTasks();
 
-      res.json(allTasks);
+      const tasksEntity = allTasks?.map((task) => fromEntityToDto(task));
+
+      res.json(tasksEntity);
     } catch (error) {
       next(error);
     }
@@ -71,7 +75,11 @@ export class TaskController {
       }
       const task = await this.taskService.getTaskById(Number(id));
 
-      res.json(task);
+      if (!task) {
+        throw new TaskNotFound();
+      }
+
+      res.json(fromEntityToDto(task));
     } catch (error) {
       next(error);
     }
@@ -90,6 +98,10 @@ export class TaskController {
 
     try {
       const taskDeleted = await this.taskService.deleteTask(Number(id));
+
+      if (!taskDeleted) {
+        throw new TaskNotFound();
+      }
 
       res.status(201).json({ message: "Task deleted" });
     } catch (error) {
@@ -111,7 +123,11 @@ export class TaskController {
 
     const taskUpdated = await this.taskService.taskUpdated(Number(id), body);
 
-    res.json(taskUpdated);
+    if (!taskUpdated) {
+      throw new TaskNotFound();
+    }
+
+    res.json(fromEntityToDto(taskUpdated));
 
     try {
     } catch (error) {

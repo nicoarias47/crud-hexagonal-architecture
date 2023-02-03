@@ -2,7 +2,6 @@ import { fromModelToEntity } from "../application/mapper/fromModelToEntity";
 import { ITaskRepository } from "../application/repository/task_repository_interface";
 import { Task } from "../domain/task_entity";
 import { TaskModel } from "./task_model";
-import { fromDtoToEntity } from "../application/mapper/fromDtoToEntity";
 
 export class TaskRepository implements ITaskRepository {
   private readonly taskModel: typeof TaskModel;
@@ -26,7 +25,7 @@ export class TaskRepository implements ITaskRepository {
   async getTaskById(id: number): Promise<Task | null> {
     const task = await this.taskModel.findByPk(id);
 
-    return fromModelToEntity(task);
+    return task === null ? null : fromModelToEntity(task);
   }
 
   async taskUpdated(id: number, task: Task): Promise<Task | null> {

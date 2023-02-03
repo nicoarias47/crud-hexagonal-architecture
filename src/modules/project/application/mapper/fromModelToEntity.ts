@@ -8,7 +8,7 @@ export const fromModelToEntity = ({
   createdAt,
   updatedAt,
 }: any): Project => {
-  const productEntity = new Project(
+  const projectEntity = new Project(
     id,
     name,
     priority,
@@ -16,5 +16,5 @@ export const fromModelToEntity = ({
     createdAt,
     updatedAt
   );
-  return productEntity;
+  return projectEntity;
 };

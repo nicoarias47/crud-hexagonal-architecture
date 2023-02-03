@@ -5,6 +5,7 @@ import { fromNewProjectDtoToEntity } from "../application/mapper/fromNewProjectD
 import { fromEntityToProjectDto } from "../application/mapper/fromEntityToProjectDto";
 import { IProjectRepository } from "../application/repository/project.repository.interface";
 import { ProjectDoesNotExist } from "../application/error/ProjectDoesNotExist";
+import { IdIsNotANumber } from "../application/error/IdIsNotANumber";
 
 export class ProjectController {
   baseRoute = "/project";
@@ -57,9 +58,16 @@ export class ProjectController {
     const { id } = req.params;
 
     try {
+      if (isNaN(Number(id))) {
+        throw new IdIsNotANumber(id);
+      }
       const project = await this.projectService.getOneProject(Number(id));
 
-      res.json(project);
+      if (!project) {
+        throw new ProjectDoesNotExist();
+      }
+
+      res.json(fromEntityToProjectDto(project));
     } catch (error) {
       next(error);
     }
@@ -70,12 +78,13 @@ export class ProjectController {
     const { body } = req;
 
     try {
+      if (isNaN(Number(id))) {
+        throw new IdIsNotANumber(id);
+      }
       const project = await this.projectService.updateProject(Number(id), body);
 
-      if (project === null) {
-        return res
-          .status(400)
-          .json({ message: `Project ${id} does not exist` });
+      if (!project) {
+        throw new ProjectDoesNotExist();
       }
 
       res.json(fromEntityToProjectDto(project));
@@ -86,7 +95,11 @@ export class ProjectController {
 
   async deleteProject(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
+
     try {
+      if (isNaN(Number(id))) {
+        throw new IdIsNotANumber(id);
+      }
       const existProject = await this.projectService.getOneProject(Number(id));
 
       if (!existProject) {
