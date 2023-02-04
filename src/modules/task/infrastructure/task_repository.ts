@@ -16,8 +16,11 @@ export class TaskRepository implements ITaskRepository {
     return fromModelToEntity(taskCreated);
   }
 
-  async getAllTasks(): Promise<Task[] | null> {
-    const tasks = await this.taskModel.findAll();
+  async getAllTasks(offset: number, limit: number): Promise<Task[] | null> {
+    const tasks = await this.taskModel.findAll({
+      offset,
+      limit,
+    });
 
     return tasks === null ? null : tasks.map((task) => fromModelToEntity(task));
   }
@@ -45,5 +48,11 @@ export class TaskRepository implements ITaskRepository {
     const taskDeleted = await this.taskModel.destroy({ where: { id } });
 
     return taskDeleted === null ? null : fromModelToEntity(taskDeleted);
+  }
+
+  async countTasks(): Promise<number> {
+    const count = await this.taskModel.count();
+
+    return count;
   }
 }

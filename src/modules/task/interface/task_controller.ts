@@ -1,6 +1,7 @@
 import { Application, NextFunction, Request, Response } from "express";
 import { TaskDto } from "../application/dto/task_dto";
 import { IdIsNotANumber } from "../application/error/IdIsNotANumber";
+import { LimitorOffsetNotANumber } from "../application/error/LimitorOffsetNotANumber";
 import { TaskNotFound } from "../application/error/TaskNotFound";
 import { fromDtoToEntity } from "../application/mapper/fromDtoToEntity";
 import { fromEntityToDto } from "../application/mapper/fromEntityToDto";
@@ -51,12 +52,24 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    const { limit = 0, offset = 10 } = req.query;
+
     try {
-      const allTasks = await this.taskRepository.getAllTasks();
+      const limitnumber: number = Number(limit);
+      const offsetnumber: number = Number(offset);
+
+      if (isNaN(Number(limitnumber)) || isNaN(Number(offsetnumber))) {
+        throw new LimitorOffsetNotANumber();
+      }
+
+      const [allTasks, countTasks] = await Promise.all([
+        this.taskService.getAllTasks(limitnumber, offsetnumber),
+        this.taskService.countTasks(),
+      ]);
 
       const tasksEntity = allTasks?.map((task) => fromEntityToDto(task));
 
-      res.json(tasksEntity);
+      res.json({ count: countTasks, tasks: tasksEntity });
     } catch (error) {
       next(error);
     }

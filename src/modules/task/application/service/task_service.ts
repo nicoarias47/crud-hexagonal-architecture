@@ -11,6 +11,12 @@ export class TaskService {
     return taskCreated;
   }
 
+  async getAllTasks(limit: number, offset: number): Promise<Task[] | null> {
+    const allTasks = await this.taskRepository.getAllTasks(limit, offset);
+
+    return allTasks;
+  }
+
   async getTaskById(id: number): Promise<Task | null> {
     const task = await this.taskRepository.getTaskById(id);
 
@@ -27,5 +33,11 @@ export class TaskService {
     const taskDeleted = await this.taskRepository.deleteTask(id);
 
     return taskDeleted;
+  }
+
+  async countTasks(): Promise<number> {
+    const count = await this.taskRepository.countTasks();
+
+    return count;
   }
 }
