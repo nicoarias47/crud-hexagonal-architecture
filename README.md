@@ -10,7 +10,7 @@ This is a simple REST API using Hexagonal Architecture
 - rsdi 
 
 # Modeling
-This is the basic relationship that i using
+This is the basic relationship that i am using
 
 ![Alt text](src/assets/diagram.png)
 
